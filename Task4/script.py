@@ -16,9 +16,9 @@ def get_my_addr():
     return [my_macs[i], my_ips[i]]
 
 
-def get_list_hosts():
+def get_list_hosts(ip='192.168.0.0'):
     nm = nmap.PortScanner()
-    nm.scan(hosts='192.168.0.0/24', arguments='-n -sP -PE -PA21,23,80,3389')
+    nm.scan(hosts=(ip+'/24'), arguments='-n -sP -PE -PA21,23,80,3389')
     hosts_list = [(x, nm[x]['status']['state']) for x in nm.all_hosts()]
     for host, status in hosts_list:
         print(f'{host}:{status}')
@@ -42,11 +42,20 @@ if __name__ == "__main__":
     gateway_ip = '.'.join(network_ip_mas)
     print('My_mac: ' + my_mac + '; My_ip: ' + my_ip + '; Gateway_ip: ' + gateway_ip)
     if input("Is this data correct? (y/n) ") is 'n':
-        exit(0)
+        check = input("Gateway ip: (type or 'n') ")
+        if check is not ('n' and ''):
+            gateway_ip = check
+        check = input("My ip: (type or 'n') ")
+        if check is not ('n' and ''):
+            my_ip = check
+        check = input("My mac: (type or 'n') ")
+        if check is not ('n' and ''):
+            my_mac = check
+        print('My_mac: ' + my_mac + '; My_ip: ' + my_ip + '; Gateway_ip: ' + gateway_ip)
 
     # Show the list of hosts
     if input("Do you want see the list of hosts in local network? (y/n) ") is ('y' or ''):
-        get_list_hosts()
+        get_list_hosts(network_ip)
     attacked_ip = input("Type attacked host: ")
     # Type time
     data = input("Type minutes and seconds: ").split()
